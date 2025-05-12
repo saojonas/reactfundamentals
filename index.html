@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Front-End Fundamentals</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
+    <style>
+        /* Custom CSS for things Tailwind can't handle */
+        .code-block {
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        .interactive-box {
+            transition: all 0.3s ease;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        .dark .gradient-bg {
+            background: linear-gradient(135deg, #2c3e50 0%, #1a1a2e 100%);
+        }
+        .custom-checkbox {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #4f46e5;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .custom-checkbox:checked::after {
+            content: "✓";
+            color: white;
+            background-color: #4f46e5;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 2px;
+        }
+        #flexbox-container {
+            transition: all 0.3s ease;
+        }
+        #absolute-demo {
+            position: relative;
+            height: 200px;
+        }
+        .absolute-box {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .icon-container {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .icon-container:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 gradient-bg min-h-screen transition-colors duration-300">
+    <div class="container mx-auto px-4 py-8 flex flex-col md:flex-row">
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 mb-6 md:mb-0 md:mr-6 sticky top-6 h-fit">
+            <h1 class="text-2xl font-bold mb-6 text-indigo-600 dark:text-indigo-400">Front-End Fundamentals</h1>
+            <nav>
+                <ul class="space-y-2">
+                    <li>
+                        <button onclick="showSection('colors')" class="w-full text-left px-4 py-2 rounded-lg hover:bg-indigo-50 dark:hover:bg-gray-700 flex items-center">
+                            <i class="fas fa-palette mr-3 text-indigo-500"></i>
+                            Colorir Views
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="showSection('flexbox')" class="w-full text-left px-4 py-2 rounded-lg hover:bg-indigo-50 dark:hover:bg-gray-700 flex items-center">
+                            <i class="fas fa-boxes mr-3 text-indigo-500"></i>
+                            Flexbox
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="showSection('absolute')" class="w-full text-left px-4 py-2 rounded-lg hover:bg-indigo-50 dark:hover:bg-gray-700 flex items-center">
+                            <i class="fas fa-layer-group mr-3 text-indigo-500"></i>
+                            Posicionamento Absoluto
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="showSection('images')" class="w-full text-left px-4 py-2 rounded-lg hover:bg-indigo-50 dark:hover:bg-gray-700 flex items-center">
+                            <i class="fas fa-image mr-3 text-indigo-500"></i>
+                            Imagens via URL
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="showSection('borders')" class="w-full text-left px-4 py-2 rounded-lg hover:bg-indigo-50 dark:hover:bg-gray-700 flex items-center">
+                            <i class="fas fa-square mr-3 text-indigo-500"></i>
+                            Bordas Arredondadas
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="showSection('inputs')" class="w-full text-left px-4 py-2 rounded-lg hover:bg-indigo-50 dark:hover:bg-gray-700 flex items-center">
+                            <i class="fas fa-keyboard mr-3 text-indigo-500"></i>
+                            Inputs Personalizados
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="showSection('icons')" class="w-full text-left px-4 py-2 rounded-lg hover:bg-indigo-50 dark:hover:bg-gray-700 flex items-center">
+                            <i class="fas fa-icons mr-3 text-indigo-500"></i>
+                            React-Icons
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+            <div class="mt-8 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between">
+                    <span class="text-sm">Modo Escuro</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="darkModeToggle" class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 dark:peer-focus:ring-indigo-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-indigo-600"></div>
+                    </label>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1">
+            <!-- Colors Section -->
+            <section id="colors" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6 section-content">
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-palette text-2xl mr-3 text-indigo-500"></i>
+                    <h2 class="text-2xl font-bold">Colorir Views com Stylesheet</h2>
+                </div>
+                <p class="mb-4">Existem várias maneiras de estilizar elementos em React e CSS. Vamos explorar as diferenças entre CSS tradicional, módulos CSS e estilos inline.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-blue-100 dark:bg-blue-900 p-4 rounded-lg">
+                        <h3 class="font-bold mb-2">CSS Tradicional</h3>
+                        <p>Estilos definidos em arquivos .css separados, aplicados globalmente.</p>
+                    </div>
+                    <div class="bg-purple-100 dark:bg-purple-900 p-4 rounded-lg">
+                        <h3 class="font-bold mb-2">Módulos CSS</h3>
+                        <p>Estilos com escopo local usando arquivos .module.css, evitando conflitos.</p>
+                    </div>
+                    <div class="bg-pink-100 dark:bg-pink-900 p-4 rounded-lg">
+                        <h3 class="font-bold mb-2">Estilos Inline</h3>
+                        <p>Estilos aplicados diretamente nos elementos via propriedade style.</p>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="font-bold mb-2">Demonstração de Cores</h3>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <div class="w-16 h-16 bg-red-500 rounded-lg"></div>
+                        <div class="w-16 h-16 bg-blue-500 rounded-lg"></div>
+                        <div class="w-16 h-16 bg-green-500 rounded-lg"></div>
+                        <div class="w-16 h-16 bg-yellow-500 rounded-lg"></div>
+                        <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg"></div>
+                    </div>
+                    <p>Experimente mudar as cores abaixo:</p>
+                    <div class="flex items-center space-x-4 mt-2">
+                        <input type="color" id="bgColorPicker" value="#4f46e5" class="w-12 h-12">
+                        <input type="color" id="textColorPicker" value="#ffffff" class="w-12 h-12">
+                        <button onclick="applyColors()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Aplicar</button>
+                    </div>
+                    <div id="colorDemo" class="mt-4 p-6 rounded-lg bg-indigo-600 text-white">
+                        Este é um exemplo de elemento estilizado. As cores serão alteradas quando você clicar em "Aplicar".
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="font-bold mb-2">Código Exemplo</h3>
+                    <div class="code-block">
+                        <pre class="language-jsx"><code>// CSS Tradicional (arquivo styles.css)
+.container {
+  background-color: #4f46e5;
+  color: white;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+}
+
+// Módulo CSS (arquivo Styles.module.css)
+.container {
+  composes: base from global;
+  background: linear-gradient(to right, #4f46e5, #c084fc);
+}
+
+// Estilo Inline (no componente)
+function ColoredBox() {
+  return (
+    &lt;div style={{
+      backgroundColor: '#4f46e5',
+      color: 'white',
+      padding: '1.5rem',
+      borderRadius: '0.5rem'
+    }}&gt;
+      Conteúdo estilizado
+    &lt;/div&gt;
+  );
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg border-l-4 border-yellow-400">
+                    <h3 class="font-bold mb-2">Dica Prática</h3>
+                    <p>Para projetos maiores, prefira módulos CSS ou bibliotecas como TailwindCSS para manter os estilos organizados e evitar conflitos de classes.</p>
+                </div>
+            </section>
+
+            <!-- Flexbox Section -->
+            <section id="flexbox" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6 section-content hidden">
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-boxes text-2xl mr-3 text-indigo-500"></i>
+                    <h2 class="text-2xl font-bold">Posicionamento com Flexbox</h2>
+                </div>
+                <p class="mb-4">Flexbox é um modelo de layout unidimensional que permite distribuir espaço entre itens em uma interface e alinhá-los de maneira poderosa.</p>
+                
+                <div class="mb-6">
+                    <h3 class="font-bold mb-2">Controles Interativos</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block mb-2">Justify Content</label>
+                            <select id="justifyContent" class="w-full p-2 border rounded-lg bg-white dark:bg-gray-700">
+                                <option value="flex-start">flex-start</option>
+                                <option value="flex-end">flex-end</option>
+                                <option value="center">center</option>
+                                <option value="space-between">space-between</option>
+                                <option value="space-around">space-around</option>
+                                <option value="space-evenly">space-evenly</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block mb-2">Align Items</label>
+                            <select id="alignItems" class="w-full p-2 border rounded-lg bg-white dark:bg-gray-700">
+                                <option value="flex-start">flex-start</option>
+                                <option value="flex-end">flex-end</option>
+                                <option value="center">center</option>
+                                <option value="baseline">baseline</option>
+                                <option value="stretch">stretch</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block mb-2">Flex Direction</label>
+                            <select id="flexDirection" class="w-full p-2 border rounded-lg bg-white dark:bg-gray-700">
+                                <option value="row">row</option>
+                                <option value="row-reverse">row-reverse</option>
+                                <option value="column">column</option>
+                                <option value="column-reverse">column-reverse</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block mb-2">Gap (px)</label>
+                            <input type="range" id="gap" min="0" max="40" value="10" class="w-full">
+                            <span id="gapValue">10px</span>
+                        </div>
+                    </div>
+                    <button onclick="updateFlexbox()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Aplicar Estilos</button>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="font-bold mb-2">Demonstração</h3>
+                    <div id="flexbox-container" class="border-2 border-dashed border-gray-300 dark:border-gray-600 p-4 rounded-lg mb-4" style="display: flex; justify-content: flex-start; align-items: flex-start; flex-direction: row; gap: 10px; min-height: 200px;">
+                        <div class="w-16 h-16 bg-red-500 rounded-lg flex items-center justify-center text-white font-bold">1</div>
+                        <div class="w-16 h-16 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold">2</div>
+                        <div class="w-16 h-16 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold">3</div>
+                        <div class="w-16 h-24 bg-purple-500 rounded-lg flex items-center justify-center text-white font-bold">4</div>
+                        <div class="w-16 h-20 bg-yellow-500 rounded-lg flex items-center justify-center text-white font-bold">5</div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="font-bold mb-2">Código Exemplo</h3>
+                    <div class="code-block">
+                        <pre class="language-css"><code>/* Container Flexbox */
+.container {
+  display: flex;
+  justify-content: flex-start; /* Alinhamento horizontal */
+  align-items: flex-start;    /* Alinhamento vertical */
+  flex-direction: row;        /* Direção dos itens */
+  gap: 10px;                  /* Espaço entre itens */
+}
+
+/* Itens Flex */
+.item {
+  width: 64px;
+  height: 64px;
+  background-color: #4f46e5;
+  border-radius: 0.5rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg border-l-4 border-yellow-400">
+                    <h3 class="font-bold mb-2">Dica Prática</h3>
+                    <p>Use <code>flex: 1</code> em itens para que eles preencham o espaço disponível proporcionalmente. Combine com <code>flex-wrap: wrap</code> para layouts responsivos que quebram em várias linhas.</p>
+                </div>
+            </section>
+
+            <!-- Absolute Positioning Section -->
+            <section id="absolute" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6 section-content hidden">
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-layer-group text-2xl mr-3 text-indigo-500"></i>
+                    <h2 class="text-2xl font-bold">Posicionamento Absoluto</h2>
+                </div>
+                <p class="mb-4">O posicionamento absoluto remove um elemento do fluxo normal do documento e o posiciona em relação ao seu ancestral posicionado mais próximo.</p>
+                
+                <div class="mb-6">
+                    <h3 class="font-bold mb-2">Demonstração Interativa</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block mb-2">Posição X (px)</label>
+                            <input type="range" id="posX" min="0" max="300" value="50" class="w-full">
+                            <span id="posXValue">50px</span>
+                        </div>
+                        <div>
+                            <label class="block mb-2">Posição Y (px)</label>
+                            <input type="range" id="posY" min="0" max="150" value="50" class="w-full">
+                            <span id="posYValue">50px</span>
+                        </div>
+                    </div>
+                    <button onclick="updateAbsolutePosition()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 mb-4">Atualizar Posição</button>
+                    
+                    <div id="absolute-demo" class="bg-gray-100 dark:bg-gray-700 rounded-lg mb-4">
+                        <div id="absolute-box" class="absolute-box bg-red-500">Box</div>
+                        <p class="p-4">Este é o container relativo (position: relative). O quadrado vermelho está com position: absolute.</p>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="font-bold mb-2">Código Exemplo</h3>
+                    <div class="code-block">
+                        <pre class="language-html"><code>&lt;!-- HTML --&gt;
+&lt;div class="relative-container"&gt;
+  &lt;div class="absolute-box"&gt;&lt;/div&gt;
+  &lt;p&gt;Conteúdo normal&lt;/p&gt;
+&lt;/div&gt;
+
+/* CSS */
+.relative-container {
+  position: relative; /* Ancestral posicionado */
+  height: 200px;
+  background-color: #f3f4f6;
+}
+
+.absolute-box {
+  position: absolute;
+  top: 50px;  /* Distância do topo */
+  left: 50px; /* Distância da esquerda */
+  width: 80px;
+  height: 80px;
+  background-color: #ef4444;
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg border-l-4 border-yellow-400">
+                    <h3 class="font-bold mb-2">Dica Prática</h3>
+                    <p>Evite usar position: absolute para layouts principais. Reserve para elementos como tooltips, modais ou elementos de sobreposição. Sempre defina um ancestral com position: relative para conter o elemento absoluto.</p>
+                </div>
+            </section>
+
+            <!-- Images Section -->
+            <section id="images" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6 section-content hidden">
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-image text-2xl mr-3 text-indigo-500"></i>
+                    <h2 class="text-2xl font-bold">Imagens via URL</h2>
+                </div>
+                <p class="mb-4">As imagens podem ser carregadas de URLs externas ou do seu projeto. A propriedade object-fit controla como a imagem se ajusta ao seu container.</p>
+                
+                <div class="mb-6">
+                    <h3 class="font-bold mb-2">Demonstração</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block mb-2">object-fit</label>
+                            <select id="objectFit" class="w-full p-2 border rounded-lg bg-white dark:bg-gray-700" onchange="updateImageStyle()">
+                                <option value="fill">fill</option>
+                                <option value="contain">contain</option>
+                                <option value="cover" selected>cover</option>
+                                <option value="none">none</option>
+                                <option value="scale-down">scale-down</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block mb-2">Tamanho do Container</label>
+                            <select id="containerSize" class="w-full p-2 border rounded-lg bg-white dark:bg-gray-700" onchange="updateImageStyle()">
+                                <option value="small">Pequeno (200x150)</option>
+                                <option value="medium" selected>Médio (300x200)</option>
+                                <option value="large">Grande (400x300)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div id="image-container" class="w-full h-[200px] md:h-[300px] bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden mb-4">
+                        <img id="demo-image" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb" alt="Exemplo de imagem" class="w-full h-full object-cover">
+                    </div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Imagem de exemplo do Unsplash</p>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="font-bold mb-2">Código Exemplo</h3>
+                    <div class="code-block">
+                        <pre class="language-jsx"><code>// Componente de Imagem em React
+function ResponsiveImage() {
+  return (
+    &lt;div className="image-container"&gt;
+      &lt;img 
+        src="https://exemplo.com/imagem.jpg" 
+        alt="Descrição da imagem"
+        className="image-style"
+      /&gt;
+    &lt;/div&gt;
+  );
+}
+
+/* CSS */
+.image-container {
+  width: 100%;
+  height: 300px;
+  background-color: #f3f4f6;
+}
+
+.image-style {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* ou contain, fill, etc. */
+  border-radius: 0.5rem;
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg border-l-4 border-yellow-400">
+                    <h3 class="font-bold mb-2">Dica Prática</h3>
+                    <p>Sempre inclua o atributo <code>alt</code> para acessibilidade. Para imagens responsivas, considere usar o elemento <code>&lt;picture&gt;</code> com múltiplas fontes ou a propriedade CSS <code>srcset</code>.</p>
+                </div>
+            </section>
+
+            <!-- Borders Section -->
+            <section id="borders" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6 section-content hidden">
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-square text-2xl mr-3 text-indigo-500"></i>
+                    <h2 class="text-2xl font-bold">Bordas Arredondadas</h2>
+                </div>
+                <p class="mb-4">A propriedade border-radius permite criar cantos arredondados em elementos. Você pode especificar valores individuais para cada canto.</p>
+                
+                <div class="mb-6">
+                    <h3 class="font-bold mb-2">Demonstração Interativa</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block mb-2">border-radius (px)</label>
+                            <input type="range" id="borderRadius" min="0" max="100" value="8" class="w-full" oninput="updateBorderRadius()">
+                            <span id="borderRadiusValue">8px</span>
+                        </div>
+                        <div>
+                            <label class="block mb-2">Cor da Borda</label>
+                            <input type="color" id="borderColor" value="#4f46e5" class="w-full h-10" oninput="updateBorderRadius()">
+                        </div>
+                    </div>
+                    
+                    <div id="border-demo" class="w-full h-32 bg-indigo-100 dark:bg-indigo-900 border-4 border-indigo-500 rounded-lg flex items-center justify-center transition-all duration-300 mb-4">
+                        <p class="text-center">Experimente ajustar o border-radius e a cor!</p>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="font-bold mb-2">Exemplos de Bordas</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                        <div class="h-24 bg-blue-500 rounded-none"></div>
+                        <div class="h-24 bg-blue-500 rounded-sm"></div>
+                        <div class="h-24 bg-blue-500 rounded-md"></div>
+                        <div class="h-24 bg-blue-500 rounded-lg"></div>
+                        <div class="h-24 bg-blue-500 rounded-xl"></div>
+                        <div class="h-24 bg-blue-500 rounded-2xl"></div>
+                        <div class="h-24 bg-blue-500 rounded-3xl"></div>
+                        <div class="h-24 bg-blue-500 rounded-full"></div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="font-bold mb-2">Código Exemplo</h3>
+                    <div class="code-block">
+                        <pre class="language-css"><code>/* Bordas arredondadas básicas */
+.rounded-sm {
+  border-radius: 0.125rem; /* 2px */
+}
+
+.rounded-md {
+  border-radius: 0.375rem; /* 6px */
+}
+
+.rounded-lg {
+  border-radius: 0.5rem; /* 8px */
+}
+
+.rounded-full {
+  border-radius: 9999px; /* Círculo perfeito */
+}
+
+/* Bordas individuais */
+.custom-rounded {
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 1.5rem;
+  border-bottom-left-radius: 0;
+}
+
+/* Efeito hover */
+.button {
+  transition: border-radius 0.3s ease;
+}
+
+.button:hover {
+  border-radius: 0.75rem;
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg border-l-4 border-yellow-400">
+                    <h3 class="font-bold mb-2">Dica Prática</h3>
+                    <p>Use valores altos de border-radius (como 9999px) para criar cápsulas e círculos perfeitos. Combine com sombras (box-shadow) para efeitos de profundidade.</p>
+                </div>
+            </section>
+
+            <!-- Inputs Section -->
+            <section id="inputs" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6 section-content hidden">
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-keyboard text-2xl mr-3 text-indigo-500"></i>
+                    <h2 class="text-2xl font-bold">Inputs Personalizados</h2>
+                </div>
+                <p class="mb-4">Os elementos de formulário podem ser estilizados para combinar com o design do seu site usando pseudo-classes como :focus, :hover e :checked.</p>
+                
+                <div class="mb-6">
+                    <h3 class="font-bold mb-2">Demonstração</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="font-bold mb-2">Input de Texto</h3>
+                            <div class="mb-4">
+                                <label class="block mb-2">Nome</label>
+                                <input type="text" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 transition-all duration-200" placeholder="Digite seu nome">
+                            </div>
+                            
+                            <h3 class="font-bold mb-2">Input de Busca</h3>
+                            <div class="relative mb-4">
+                                <input type="search" class="w-full p-3 pl-10 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 transition-all duration-200" placeholder="Buscar...">
+                                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-bold mb-2">Checkbox Personalizado</h3>
+                            <div class="flex items-center mb-4">
+                                <input type="checkbox" id="customCheckbox" class="custom-checkbox mr-2">
+                                <label for="customCheckbox">Aceito os termos</label>
+                            </div>
+                            
+                            <h3 class="font-bold mb-2">Slider</h3>
+                            <input type="range" class="w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-indigo-600">
+                            
+                            <h3 class="font-bold mt-4 mb-2">Select</h3>
+                            <select class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 appearance-none bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWNoZXZyb24tZG93biI+PHBhdGggZD0ibTYgOSA2IDYgNi02Ii8+PC9zdmc+')] bg-no-repeat bg-[center_right_1rem]">
+                                <option>Selecione uma opção</option>
+                                <option>Opção 1</option>
+                                <option>Opção 2</option>
+                                <option>Opção 3</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="font-bold mb-2">Código Exemplo</h3>
+                    <div class="code-block">
+                        <pre class="language-css"><code>/* Estilização básica de input */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+/* Estilo quando o input está em foco */
+input:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+/* Estilo para input de busca com ícone */
+.search-input {
+  padding-left: 2.5rem;
+  background-image: url('search-icon.svg');
+  background-position: 0.75rem center;
+  background-repeat: no-repeat;
+}
+
+/* Checkbox personalizado */
+.custom-checkbox {
+  appearance: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid #6366f1;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.custom-checkbox:checked {
+  background-color: #6366f1;
+  background-image: url("data:image/svg+xml,...");
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg border-l-4 border-yellow-400">
+                    <h3 class="font-bold mb-2">Dica Prática</h3>
+                    <p>Mantenha a acessibilidade ao estilizar inputs: não remova completamente o outline no :focus, mas estilize-o de forma atraente. Use labels associadas a todos os inputs e forneça feedback visual para estados como inválido ou desabilitado.</p>
+                </div>
+            </section>
+
+            <!-- Icons Section -->
+            <section id="icons" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6 section-content hidden">
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-icons text-2xl mr-3 text-indigo-500"></i>
+                    <h2 class="text-2xl font-bold">React-Icons</h2>
+                </div>
+                <p class="mb-4">React-Icons é uma biblioteca que fornece ícones populares como Font Awesome, Material Design, e muito mais, em formato de componentes React.</p>
+                
+                <div class="mb-6">
+                    <h3 class="font-bold mb-2">Demonstração Interativa</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <div class="icon-container p-4 bg-indigo-100 dark:bg-indigo-900/50 rounded-lg flex flex-col items-center" onclick="changeIcon(this, 'heart')">
+                            <i class="fas fa-heart text-3xl text-red-500 mb-2"></i>
+                            <span class="text-sm">Curtir</span>
+                        </div>
+                        <div class="icon-container p-4 bg-indigo-100 dark:bg-indigo-900/50 rounded-lg flex flex-col items-center" onclick="changeIcon(this, 'star')">
+                            <i class="fas fa-star text-3xl text-yellow-500 mb-2"></i>
+                            <span class="text-sm">Favorito</span>
+                        </div>
+                        <div class="icon-container p-4 bg-indigo-100 dark:bg-indigo-900/50 rounded-lg flex flex-col items-center" onclick="changeIcon(this, 'bookmark')">
+                            <i class="fas fa-bookmark text-3xl text-blue-500 mb-2"></i>
+                            <span class="text-sm">Salvar</span>
+                        </div>
+                        <div class="icon-container p-4 bg-indigo-100 dark:bg-indigo-900/50 rounded-lg flex flex-col items-center" onclick="changeIcon(this, 'share')">
+                            <i class="fas fa-share-alt text-3xl text-green-500 mb-2"></i>
+                            <span class="text-sm">Compartilhar</span>
+                        </div>
+                    </div>
+                    <p>Clique em qualquer ícone acima para alterá-lo!</p>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="font-bold mb-2">Código Exemplo</h3>
+                    <div class="code-block">
+                        <pre class="language-jsx"><code>// Instalação
+npm install react-icons
+
+// Uso básico
+import { FaReact, FaHeart, FaStar } from 'react-icons/fa';
+import { MdEmail } from 'react-icons/md';
+
+function IconExample() {
+  const [liked, setLiked] = useState(false);
+  
+  return (
+    &lt;div&gt;
+      &lt;FaReact className="text-blue-500 text-4xl" /&gt;
+      
+      &lt;button 
+        onClick={() => setLiked(!liked)}
+        className="flex items-center gap-2 px-4 py-2 rounded-lg"
+      &gt;
+        {liked ? (
+          &lt;FaHeart className="text-red-500" /&gt;
+        ) : (
+          &lt;FaHeart className="text-gray-400" /&gt;
+        )}
+        &lt;span&gt;{liked ? 'Curtido' : 'Curtir'}&lt;/span&gt;
+      &lt;/button&gt;
+      
+      &lt;div className="flex gap-4 mt-4"&gt;
+        &lt;FaStar className="text-yellow-400 text-2xl" /&gt;
+        &lt;MdEmail className="text-blue-400 text-2xl" /&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="font-bold mb-2">Bibliotecas Disponíveis</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
+                            <h3 class="font-bold mb-2">Font Awesome</h3>
+                            <p>Ícones populares e versáteis</p>
+                            <p class="text-sm mt-2">@fortawesome/react-fontawesome</p>
+                        </div>
+                        <div class="p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
+                            <h3 class="font-bold mb-2">Material Design</h3>
+                            <p>Ícones do Google Material</p>
+                            <p class="text-sm mt-2">react-icons/md</p>
+                        </div>
+                        <div class="p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
+                            <h3 class="font-bold mb-2">Feather Icons</h3>
+                            <p>Ícones minimalistas</p>
+                            <p class="text-sm mt-2">react-icons/fi</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg border-l-4 border-yellow-400">
+                    <h3 class="font-bold mb-2">Dica Prática</h3>
+                    <p>Para melhor performance, importe apenas os ícones que você precisa. React-Icons suporta tree-shaking, então apenas os ícones usados serão incluídos no seu bundle final.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Initialize highlight.js
+        document.addEventListener('DOMContentLoaded', (event) => {
+            hljs.highlightAll();
+            
+            // Show first section by default
+            showSection('colors');
+            
+            // Set up dark mode toggle
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (localStorage.getItem('darkMode') === 'true' || 
+                (localStorage.getItem('darkMode') !== 'false' && prefersDark)) {
+                document.documentElement.classList.add('dark');
+                darkModeToggle.checked = true;
+            }
+            
+            darkModeToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('darkMode', 'true');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('darkMode', 'false');
+                }
+            });
+        });
+
+        // Section navigation
+        function showSection(sectionId) {
+            document.querySelectorAll('.section-content').forEach(section => {
+                section.classList.add('hidden');
+            });
+            document.getElementById(sectionId).classList.remove('hidden');
+        }
+
+        // Color section functions
+        function applyColors() {
+            const bgColor = document.getElementById('bgColorPicker').value;
+            const textColor = document.getElementById('textColorPicker').value;
+            const demoElement = document.getElementById('colorDemo');
+            
+            demoElement.style.backgroundColor = bgColor;
+            demoElement.style.color = textColor;
+        }
+
+        // Flexbox section functions
+        function updateFlexbox() {
+            const container = document.getElementById('flexbox-container');
+            const justifyContent = document.getElementById('justifyContent').value;
+            const alignItems = document.getElementById('alignItems').value;
+            const flexDirection = document.getElementById('flexDirection').value;
+            const gap = document.getElementById('gap').value + 'px';
+            
+            container.style.justifyContent = justifyContent;
+            container.style.alignItems = alignItems;
+            container.style.flexDirection = flexDirection;
+            container.style.gap = gap;
+            
+            document.getElementById('gapValue').textContent = gap;
+        }
+
+        // Absolute positioning functions
+        function updateAbsolutePosition() {
+            const box = document.getElementById('absolute-box');
+            const posX = document.getElementById('posX').value;
+            const posY = document.getElementById('posY').value;
+            
+            box.style.left = posX + 'px';
+            box.style.top = posY + 'px';
+            
+            document.getElementById('posXValue').textContent = posX + 'px';
+            document.getElementById('posYValue').textContent = posY + 'px';
+        }
+
+        // Images section functions
+        function updateImageStyle() {
+            const image = document.getElementById('demo-image');
+            const objectFit = document.getElementById('objectFit').value;
+            const containerSize = document.getElementById('containerSize').value;
+            const container = document.getElementById('image-container');
+            
+            image.style.objectFit = objectFit;
+            
+            switch(containerSize) {
+                case 'small':
+                    container.classList.remove('h-[300px]', 'h-[400px]');
+                    container.classList.add('h-[200px]');
+                    break;
+                case 'medium':
+                    container.classList.remove('h-[200px]', 'h-[400px]');
+                    container.classList.add('h-[300px]');
+                    break;
+                case 'large':
+                    container.classList.remove('h-[200px]', 'h-[300px]');
+                    container.classList.add('h-[400px]');
+                    break;
+            }
+        }
+
+        // Borders section functions
+        function updateBorderRadius() {
+            const demo = document.getElementById('border-demo');
+            const radius = document.getElementById('borderRadius').value;
+            const color = document.getElementById('borderColor').value;
+            
+            demo.style.borderRadius = radius + 'px';
+            demo.style.borderColor = color;
+            
+            document.getElementById('borderRadiusValue').textContent = radius + 'px';
+        }
+
+        // Icons section functions
+        function changeIcon(element, iconType) {
+            const icons = {
+                heart: ['fas fa-heart', 'text-red-500'],
+                star: ['fas fa-star', 'text-yellow-500'],
+                bookmark: ['fas fa-bookmark', 'text-blue-500'],
+                share: ['fas fa-share-alt', 'text-green-500'],
+                check: ['fas fa-check', 'text-green-500'],
+                times: ['fas fa-times', 'text-red-500']
+            };
+            
+            // Get current icon to cycle to next one
+            const currentIcon = element.querySelector('i').className;
+            let nextIcon;
+            
+            if (currentIcon.includes('heart')) {
+                nextIcon = icons.star;
+            } else if (currentIcon.includes('star')) {
+                nextIcon = icons.bookmark;
+            } else if (currentIcon.includes('bookmark')) {
+                nextIcon = icons.share;
+            } else if (currentIcon.includes('share')) {
+                nextIcon = icons.check;
+            } else if (currentIcon.includes('check')) {
+                nextIcon = icons.times;
+            } else {
+                nextIcon = icons.heart;
+            }
+            
+            // Update the icon
+            const iconElement = element.querySelector('i');
+            iconElement.className = `${nextIcon[0]} text-3xl ${nextIcon[1]} mb-2`;
+            
+            // Update the label if needed
+            if (iconType === 'heart') {
+                element.querySelector('span').textContent = nextIcon === icons.heart[0] ? 'Curtir' : 'Alternado';
+            }
+        }
+    </script>
+</body>
+</html>
